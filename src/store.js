@@ -5,7 +5,9 @@ import router from './router';
 const store = createStore({
     state(){
         return{
-            err : {msg: '',cur: false},
+            err_msg: '',
+            err_code: '',
+            err_status: false,
             user: null,
             currentUser: '',
             userMail: '',
@@ -18,6 +20,14 @@ const store = createStore({
     },
     mutations:
     {
+        set_err(state, payload){
+            state.err_status = true;
+            state.err_msg = payload.msg;
+            state.err_code = payload.code; 
+        },
+        off_err(state){
+            state.err_status = false;
+        },
         clearAll(state){
             state.blog = [];
             state.ownBlogs= [];
@@ -90,12 +100,11 @@ const store = createStore({
        
         signUp(context,payload)
         {
-            firebase.auth().createUserWithEmailAndPassword(payload.mail, payload.password).then(() =>{
+            firebase.auth().createUserWithEmailAndPassword(payload.mail, payload.password)
+            .then(() =>{
                 router.push('/login');
-            }
-            )
-            .catch((err) => {
-                context.commit('setErr', {msg: err.message});
+            }).catch((err) => {
+                context.commit('set_err', { msg: err.message, code: err.code,});
             });
             
         },
@@ -106,15 +115,21 @@ const store = createStore({
                 () => {
                     context.commit('setMail',{mail: payload.mail});
                     context.commit('retriveState');
+                    context.commit('off_err');
+                    localStorage.setItem( 'mail', payload.mail );
+                    localStorage.setItem( 'password', payload.password );
                     router.push('/home');
-                }
-            );
+                }).catch((err) => {
+                    context.commit('set_err', { msg: err.message, code: err.code,});
+                });
         },
         logout(context)
         {
             firebase.auth().signOut().then(() => {
                 console.log("log out successfully");
                 context.commit('clearAll');
+                localStorage.removeItem('mail');
+                localStorage.removeItem('password');
                 router.push('/login');
             });
         }

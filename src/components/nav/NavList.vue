@@ -38,7 +38,8 @@ button{
 }
 
 button:hover{
-    
+    cursor: pointer;
+    border: 1px solid white; 
 }
 
 .selected

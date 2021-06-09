@@ -59,6 +59,7 @@ button
     left: 0;
     width: 100%;
     padding: 5rem 1;
+    padding-bottom: 15px;
     
 }
 .myheader h2
@@ -71,8 +72,8 @@ button
 }
 .myheader div{
     float: right;
-    margin-right: 10%;
     margin-top: 2%;
+    margin-right: 10%;
 
 }
 section {
@@ -80,8 +81,8 @@ section {
   font-family: sans-serif;
   margin: 0 auto;
   height: 40vh;
-  margin-top: 5%;
-  width: 80%;
+  margin-top: 10%;
+  width:90%;
   position: relative;
 }
 </style>

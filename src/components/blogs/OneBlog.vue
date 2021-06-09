@@ -1,5 +1,9 @@
 <template>
     <base-dialog title="Edit Blog" v-if="showedit" class="editDialog">
+
+        <template v-slot:close>
+            <button @click='closeUpdate' class='closeButton'>X</button>
+        </template>
         <div>
             <div class="divInput">
                 <label for='title'>Title</label>
@@ -19,8 +23,6 @@
             </div>
             <div class="divInput">
                 <button @click="updateBlog"  class="divButton">update</button>
-            </div><div class="divInput">
-                <button @click="closeUpdate"  class="divButton">close</button>
             </div>
         </div>
     </base-dialog>
@@ -32,11 +34,11 @@
             <button v-if="isValidToEdit" @click="deleteBlog">Delete</button>
         </div>
         <div>
-        <p>{{maincontent}}</p>
-        <p>{{content1}}</p>
-        <p>{{content2}}</p>
-        <p v-if="!isValidToEdit">{{email}}</p>
-        <p>Created At {{createdAt}}</p>
+            <p>{{maincontent}}</p>
+            <p>{{content1}}</p>
+            <p>{{content2}}</p>
+            <p v-if="!isValidToEdit">{{email}}</p>
+            <p>Created At {{createdAt}}</p>
         </div>
     </section>
 
@@ -140,16 +142,66 @@
 </script>
 
 <style scoped>
-.divButton
+
+.closeButton
 {
+    float: right;
+    text-decoration: none;
+    color: black;
+    cursor: pointer;
+    font-weight: bold;
+    padding: 3px;
+    padding-right: 10px;
+    background: none;
+    border:none;
+    font-size: 20px;
+}
+.divInput button
+{
+    border: none;
+    background: none;
     font-size: 18px;
     text-align: center;
-    width: 30%;
-    margin-left: 35%;
+    width: 20%;
+    margin-left: 40%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.divButton:hover
+{
+    border:1px solid whitesmoke;
+    border-radius: 10px;
+    cursor: pointer;
 }
 .divInput
 {
-    padding-top: 1vh;
+    margin-right: 20px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+.divInput label
+{
+    width: 30%;
+    float: left;
+    font-size: 18px;
+}
+.divInput input
+{
+    width: 90%;
+    float: left;
+    font-size: 18px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.divInput textarea
+{
+    width: 90%;
+    border-radius: 6px;
+    font-size: 15px;
+    height: 15vh;
+    padding-top: 10px;
+    padding-bottom: 5px;
 }
 .titleInput
 {

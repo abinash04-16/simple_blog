@@ -4,25 +4,25 @@
         <nav-list current="add"></nav-list>
     </div>
 
+    
     <form @submit.prevent="addBlog">
-        <router-link to="/home">X</router-link>
         <h2>Add your blog</h2>
-        <div>
+        <div class='divItem'>
             <input type="text" name="title" placeHolder="Title" v-model.trim='title'>
         </div>
-        <div>
+        <div class='divItem'>
             <textarea name="content" rows="2" cols="50" placeHolder="Enter your Content in Short" v-model.trim='maincontent'></textarea>
         </div>
-        <div>
+        <div class='divItem'>
             <textarea name="content" rows="4" cols="50" placeHolder="Paragraph" v-model.trim='content1'></textarea>
         </div>
-        <div>
+        <div class='divItem'>
             <textarea name="content" rows="4" cols="50" placeHolder="Paragraph(optional)" v-model.trim='content2'></textarea>
         </div>
-        <div>
+        <div class='divItem'>
             <input type="file" name="title" placeHolder="select Image" accept="image/*" @change="fileSelected">
         </div>
-        <div>
+        <div class='divItem'>
             <button @click="addBlog">add</button>
             
         </div>
@@ -101,6 +101,44 @@
 
 <style scoped>
 
+.divItem
+{
+    padding-top: 10px;
+    width: 94%;
+    margin-left: 3%;
+}
+
+.divItem input
+{
+    font-size: 18px;
+    padding-top: 10px;
+    padding-left: 10px;
+
+}
+
+.divItem textarea
+{
+    font-size: 15px;
+    padding-top: 10px;
+    padding-left: 10px;
+    height: 10vh;
+
+}
+
+.divItem button
+{
+    background: none;
+    border: none;
+    font-size: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+button:hover
+{
+    cursor: pointer;
+    border: 1px solid black;
+    border-radius: 5px;
+}
 .loading
 {
     width: 100%;
@@ -114,12 +152,14 @@
     font-size: 20px;
 }
 form{
-    width: 35%;
+    width: 50%;
+    border-radius: 5px;
+    height: 70vh;
     margin: 0 auto;
-    background-color: blueviolet;
+    background-color: #A1D6E2;
     border-color: rgb(162, 89, 231);
     padding: 20px;
-    margin-top: 100px;
+    margin-top: 10%;
 }
 h2
 {
@@ -178,6 +218,7 @@ a:hover
     left: 0;
     width: 100%;
     padding: 5rem 1;
+    padding-bottom: 15px;
     
 }
 .myheader h2

@@ -1,17 +1,18 @@
 <template>
     <h2>Comments</h2>
-    <div class="commentInput">
-        <input type="text" placeholder="Enter your Comment Here" v-model="inComment" >
-        <button @click="addComment">Add</button>
-        <div class="allComments" v-if="comments.length !== 0">
-        <single-comment v-for="comment in comments"
-        :key="''+comment.commentId"
-        :id="''+comment.commentId"
-        :comment="comment.comment"
-        :postedAt="comment.postedAt"
-        :userMail="comment.userMail"></single-comment>
+        <div class="getComment">
+            <input type="text" placeholder="Enter your Comment Here" v-model="inComment" >
+            <button @click="addComment" class="btn">Comment</button>
         </div>
-    </div>
+
+        <div class="allComments" v-if="comments.length !== 0">
+            <single-comment v-for="comment in comments"
+            :key="''+comment.commentId"
+            :id="''+comment.commentId"
+            :comment="comment.comment"
+            :postedAt="comment.postedAt"
+            :userMail="comment.userMail"></single-comment>
+        </div>
     
 </template>
 
@@ -96,9 +97,26 @@
     }
 </script>
 <style scoped>
-.commentInput input
+.getComment
 {
-    width: 100%;
+    width: 60%;
+    position: absolute;
+}
+.getComment button
+{
+    width: 10%;
+    float: right;
+    background-color: rgba(7, 118, 223, 0.966);
+    border-radius: 5px;
+    border: none;
+    font-size: 17px;
+    padding: 7px;
+}
+
+.getComment input
+{
+    width: 70%;
+    float: left;
     font-size: 17px;
     border-radius: 6px;
     padding: 7px;
@@ -106,8 +124,7 @@
 }
 .allComments
 {
-    position: relative;
-    margin-top:30px;
+    margin-top:100px;
     margin-bottom: 20px;
     border: none;
 }

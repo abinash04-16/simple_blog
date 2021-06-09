@@ -4,7 +4,10 @@
         <nav-list current="my"></nav-list>
     </div>
     <router-view></router-view>
-    <section>
+    <div v-if="blogs.length === 0" class='nothing'>
+        <p> nothing to show </p>
+    </div>
+    <section v-else >
         <single-blog v-for="blog in blogs"
         :key='blog.id'
         :id='blog.id'
@@ -16,7 +19,6 @@
     </section>
 
 
-    <p v-if="blogs.length === 0"> nothing to show </p>
 </template>
 
 
@@ -44,7 +46,22 @@
 
 
 <style scoped>
-
+.nothing
+{
+   width: 100%;
+    height: 100vh;
+    position: absolute;
+    top:50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    color: black;
+    background-color: rgba(255, 255, 255, 0.63);
+}
+.nothing p{
+    font-size: 25px;
+    text-align: center;
+    padding-top: 50vh;
+}
 button
 {
     width: 50%;
@@ -61,6 +78,7 @@ button
     left: 0;
     width: 100%;
     padding: 5rem 1;
+    padding-bottom: 15px;
     
 }
 .myheader p
@@ -90,7 +108,7 @@ section {
   font-family: sans-serif;
   margin: 0 auto;
   height: 40vh;
-  margin-top: 5%;
+  margin-top: 7%;
   width: 80%;
   position: relative;
 }

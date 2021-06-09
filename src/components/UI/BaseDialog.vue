@@ -1,6 +1,9 @@
 <template>
     <section>
         <dialog open class='container'>
+            <div>
+                <slot name='close'></slot>
+            </div>
             <div class="title">
                 <h2>{{title}}</h2>
             </div>
@@ -20,14 +23,17 @@
 <style scoped>
 dialog {
   position: fixed;
-  width: 50%;
+  width: 70%;
+  height: 85%;
+  top: 10%;
   z-index: 1;
   border-radius: 12px;
   border: none;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
   padding: 1rem;
   overflow: hidden;
-  background-color: rgba(13, 71, 5, 0.829);
+  background-color: #F5CA99;
+  border: 2px solid black;
 }
 
 .title

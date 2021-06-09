@@ -64,6 +64,7 @@
     float: left;
     font-size: 37px;
     margin-bottom: 30px 0;
+    color: black;
     padding-bottom: 20px;
     border-bottom: 3px solid rgb(81, 255, 0);
 }
@@ -91,7 +92,7 @@
     outline: none;
     border: 2px solid #333;
     padding: 10px;
-    color: white;
+    color: black;
     width: 100%;
     text-transform: uppercase;
     font-size: 20px;
@@ -111,7 +112,9 @@
 
 .altLink a
 {
-    color: white;
+    color: red;
+    font-weight: 600;
+    font-family: Georgia, 'Times New Roman', Times, serif;
     text-decoration: none;
     cursor: pointer;
 }
