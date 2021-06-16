@@ -9,18 +9,39 @@
             <single-comment v-for="comment in comments"
             :key="''+comment.commentId"
             :id="''+comment.commentId"
-            :comment="comment.comment"
+            :comment="comment.content"
             :postedAt="comment.postedAt"
-            :userMail="comment.userMail"></single-comment>
+            :userMail="comment.user_mail"></single-comment>
         </div>
     
 </template>
 
 <script>
-    import firebase from 'firebase';
+    //import firebase from 'firebase';
     import singleComment from './singleComment.vue';
+    import axios from 'axios';
     export default {
-        created(){
+        created()
+        {
+            axios.get( `http://localhost:3000/comment/show/${this.$route.params.id}`).then((response) => {
+                console.log(response);
+
+                const comment1 = response.data.comments;
+
+                comment1.forEach((c) => {
+                    const sample = {
+                        commentId: c.id,
+                        postedAt: c.created_at,
+                        content: c.content,
+                        user_id: c.user_id,
+                        blog_id: c.blog_id,
+                        user_mail: c.user_mail,
+                    };
+                    this.comments.unshift(sample);
+                });
+            })
+
+            /*
             const db = firebase.database();
             const refer = db.ref().child('comments/'+ this.$route.params.id);
             console.log(this.$route.params.id);
@@ -36,13 +57,13 @@
                         this.comments.push(sample);
                     });
             });
+            */
         },
         components:{
             singleComment
         },
         props:{
-            id: String,
-            email: String,
+            blog_id: Number
         },
         data(){
             return{
@@ -56,6 +77,20 @@
             {
                 if(this.inComment !== '')
                 {
+
+                    axios.post( 'http://localhost:3000/comment/add', {
+                        content: this.inComment,
+                        user_id: this.$store.state.user_id,
+                        user_mail: this.$store.state.user_mail,
+                        blog_id: this.blog_id
+                        } ).then((response) => 
+                        {
+                            console.log(response);
+                        });
+                        this.inComment='';
+                        this.retriveComments();
+
+                    /*
                     const temp = new Date().getTime();
                     const temp1 = ''+temp;
                     firebase.database().ref('comments/'+this.id+'/'+temp1).set({
@@ -67,12 +102,34 @@
                     });
                     this.inComment='';
                     this.retriveComments();
+                    */
                 }
             },
 
             retriveComments()
             {
+                console.log(this.$route.params.id);
                 this.comments.splice(0,this.comments.length);
+                axios.get( `http://localhost:3000/comment/show/${this.$route.params.id}`).then((response) => {
+                    console.log(response);
+
+                    const comment1 = response.data.comments;
+
+                    comment1.forEach((c) => {
+                        const sample = {
+                            commentId: c.id,
+                            postedAt: c.created_at,
+                            content: c.content,
+                            user_id: c.user_id,
+                            blog_id: c.blog_id,
+                            user_mail: c.user_mail,
+                        };
+                        this.comments.unshift(sample);
+                    });
+                });
+
+
+                /*
                 const db = firebase.database();
                 const refer = db.ref().child('comments/'+ this.id);
                 console.log(this.id);
@@ -92,6 +149,7 @@
                         console.log(sample);
                     });
                 });
+                */
             }
         }
     }

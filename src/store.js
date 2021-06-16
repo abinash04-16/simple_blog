@@ -1,49 +1,35 @@
 import { createStore } from 'vuex';
+import axios from 'axios';
 //import router from './router.js';
 import firebase from 'firebase';
 import router from './router';
 const store = createStore({
     state(){
         return{
-            err_msg: '',
-            err_code: '',
-            err_status: false,
-            user: null,
-            currentUser: '',
-            userMail: '',
-            userId: null,
-            isLoggedIn: false,
+            user_id: null,
+            user_mail: '',
             blogs: [],
-            ownBlogs: [],
-            blog: [],
+            ownblogs:[],
         };
     },
     mutations:
     {
-        set_err(state, payload){
-            state.err_status = true;
-            state.err_msg = payload.msg;
-            state.err_code = payload.code; 
-        },
-        off_err(state){
-            state.err_status = false;
-        },
-        clearAll(state){
-            state.blog = [];
-            state.ownBlogs= [];
+
+        clearAll(state)
+        {
+            state.user_id = null;
+            state.user_mail = '';
             state.blogs = [];
-            state.isLoggedIn = false;
-            state.userId = null;
-            state.currentUser= '';
-            state.userMail = '';
-            state.user = null;
+            state.ownblogs = [];
         },
-        setMail(state, payload)
+        setMail_andId(state, payload)
         {
-            state.userMail = payload.mail;
+            state.user_mail = payload.mail;
+            state.user_id = payload.id;
         },
-        retriveState(state)
+        retriveState()
         {
+            /*
             firebase.auth().onAuthStateChanged(
                 (user) => {
                     state.user = user;
@@ -52,9 +38,20 @@ const store = createStore({
                 }
 
             );
+            */
         },
-        getMyBlogs(state)
+        getMyBlogs()
         {
+            /*
+            axios.post('http://localhost:3000/myBlogs', {user_id: state.user_id }).then(
+                (response) => {
+                    console.log(response.data);
+                    state.ownblogs = response.data.blog;
+                }
+            );
+            */
+
+            /*
             state.ownBlogs.splice(0,state.blogs.length);
             const db = firebase.database();
             const refer = db.ref().child('blogs');
@@ -71,10 +68,36 @@ const store = createStore({
                     state.ownBlogs.push(sample);
                 });
             });
+            */
             
         },
         getAllBlogs(state)
         {
+
+            state.blogs.splice(0,state.blogs.length);
+            axios.get( 'http://localhost:3000/blog/show' ).then(
+                (response) => {
+                    const temp = response.data.blog;
+                    temp.forEach(t => {
+                        console.log(t.image.url);
+                        const sample = {
+                            id: t.id,
+                            title: t.title,
+                            maincontent: t.maincontent,
+                            content1: t.content1,
+                            content2: t.content2,
+                            user_id: t.user_id,
+                            user_mail: t.user_mail,
+                            createdAt: t.created_at,
+                            updatedAt: t.updated_at,
+                            image: t.image.url,
+                        }        
+                        state.blogs.unshift(sample);                
+                    });
+                }
+            );
+
+            /*
             firebase.database().ref("/blogs").get().then((snapshot) => {
                 if(snapshot.exists)
                 {
@@ -93,19 +116,31 @@ const store = createStore({
 
                 }
             });
+            */
         },
         
     },
     actions:{
        
-        signUp(context,payload)
+        signUp(payload)
         {
-            firebase.auth().createUserWithEmailAndPassword(payload.mail, payload.password)
+            
+            axios.post('http://localhost:3000/register', {email: payload.mail, password: payload.password}).then(
+                (response) => {
+                    if(response.data.status === 'success' )
+                    {
+                        router.push('login');
+                    }
+                }
+            );
+
+            /*firebase.auth().createUserWithEmailAndPassword(payload.mail, payload.password)
             .then(() =>{
                 router.push('/login');
             }).catch((err) => {
                 context.commit('set_err', { msg: err.message, code: err.code,});
             });
+            */
             
         },
         login(context,payload)
@@ -125,6 +160,18 @@ const store = createStore({
         },
         logout(context)
         {
+            axios.get('http://localhost:3000/logout').then((response) => {
+                if(response.data.result === 'success')
+                {
+                    console.log("log out successfully");
+                    context.commit('clearAll');
+                    localStorage.removeItem('mail');
+                    localStorage.removeItem('password');
+                    router.push('/login');
+                }
+            })
+            
+            /*
             firebase.auth().signOut().then(() => {
                 console.log("log out successfully");
                 context.commit('clearAll');
@@ -132,6 +179,7 @@ const store = createStore({
                 localStorage.removeItem('password');
                 router.push('/login');
             });
+            */
         }
     },
 });

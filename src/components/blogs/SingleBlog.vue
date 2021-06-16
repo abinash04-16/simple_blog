@@ -1,7 +1,7 @@
 <template>
     <section @click="moveto">
         <div class='item1'>
-            <img :src="imgUrl" >
+            <img :src="'http://localhost:3000'+image" >
         </div>
         <div class='item'>
             <p class="topContainer">{{title}}</p>
@@ -17,12 +17,12 @@
 <script>
     
     export default{
-        props:[ 'id', 'title', 'content', 'createdAt', 'from', 'imgUrl' ],
+        props:[ 'id', 'title', 'content', 'createdAt', 'from', 'image' ],
         methods:
         {
             moveto(){
-                const userId = '/'+this.id;
-                this.$router.push(userId);
+                const userId = ''+this.id;
+                this.$router.push('/blog/'+userId);
             }
         }
     }

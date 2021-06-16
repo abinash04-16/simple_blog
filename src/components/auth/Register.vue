@@ -5,6 +5,7 @@
             <div class="textbox">
                 <input type="text" name="mail" placeHolder="Mail" id='mail' v-model.trim='mail'/>
             </div>
+            <p v-if="error" style="color: #000">{{error_msg}}</p>
             <div class="textbox">
                 <input type="password" name="Password" placeHolder="Password" id='Password' v-model.trim='password'/>
             </div>
@@ -22,12 +23,15 @@
 
 <script>
     //import firebase from 'firebase';
+    import axios from 'axios';
     export default{
         data(){
             return{
                 mail: '',
                 password: '',
                 invalidInput: null,
+                error: false,
+                error_msg: '',
             };
         },
         methods:{
@@ -38,10 +42,24 @@
                 }
                 else
                 {
-                    this.$store.dispatch('signUp',{
-                        mail: this.mail,
-                        password: this.password,
-                    })                    
+                    axios.post('http://localhost:3000/register', {email: this.mail, password: this.password}).then(
+                        (response) => {
+                            if(response.data.status === 'success' )
+                            {
+                                console.log(response);
+                                this.$store.commit('setMail_andId', {mail: response.data.mail, id: response.data.id})
+                                this.$router.push('login');
+                            }
+                            else {
+                                if(response.data.message === 'email already taken')
+                                {
+                                    this.error = true;
+                                    this.error_msg = 'email already taken'
+                                    
+                                }
+                            }
+                }
+            );                   
                 }
             },
         }

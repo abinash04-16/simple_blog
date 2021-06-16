@@ -27,9 +27,12 @@
         </div>
     </base-dialog>
     <section class="maincontainer">
+
+        <p class="titleContainer">{{title}}</p>
+
+        <p class="mainContentContainer">{{maincontent}}</p>
         <img :src="imgUrl" >
         <div class="floatclass">
-            <p>{{title}}</p>
             <button v-if="isValidToEdit" @click="showEdit">edit</button>
             <button v-if="isValidToEdit" @click="deleteBlog">Delete</button>
         </div>
@@ -43,15 +46,16 @@
     </section>
 
     <section class="commentClass">
-        <comment-list :id="''+id" :email="email"></comment-list>
+        <comment-list :blog_id=id ></comment-list>
     </section>
 </template>
 
 
 <script>
     import commentList from '../comments/commentList.vue';
-    import firebase from 'firebase';
+    //import firebase from 'firebase';
     import BaseDialog from '../UI/BaseDialog.vue';
+import axios from 'axios';
     export default
     {
         components:{
@@ -60,7 +64,29 @@
         },
         created()
         {
+            axios.get( `http://localhost:3000/blog/${parseInt(this.$route.params.id)}` ).then(
+                (response) => {
+                    this.id = response.data.blog.id;
+                    this.title = response.data.blog.title;
+                    this.maincontent = response.data.blog.maincontent;
+                    this.content1 = response.data.blog.content1;
+                    this.content2 = response.data.blog.content2;
+                    this.email = response.data.blog.user_mail;
+                    this.userId = response.data.blog.user_id;
+                    this.createdAt = response.data.blog.created_at;
+                    this.imgUrl = 'http://localhost:3000'+response.data.blog.image.url;
+                    if( this.userId === this.$store.state.user_id )
+                    {
+                        this.isValidToEdit = true;
+                    }
+                    this.tempTitle = response.data.blog.title;
+                    this.tempmainContent = response.data.blog.maincontent;
+                    this.tempContent1 = response.data.blog.content1;
+                    this.tempContent2 = response.data.blog.content2;
+                }
+            );
 
+            /*
             firebase.database().ref().child('blogs').orderByChild("id").equalTo(parseInt(this.$route.params.id)).get()
             .then((snapshot) => {
                 snapshot.forEach((snap) => {
@@ -83,6 +109,7 @@
                     this.tempContent2 = snap.val().content2;
                 });
             });
+            */
         },
         data(){
             return{
@@ -95,7 +122,6 @@
                 content1: '',
                 content2: '',
                 userId: null,
-                currentUserId: this.$store.state.userId,
                 isValidToEdit: false,
                 showedit: false,
                 tempTitle: '',
@@ -103,7 +129,8 @@
                 tempContent1: '',
                 tempContent2: '',
                 updateInvalid: false, 
-                imgUrl: null,
+                imgUrl: '',
+                //imgUrl: 'https://wallpapercave.com/wp/hBzSEjE.jpg',
             };
         },
         methods:{
@@ -117,6 +144,20 @@
             },
             updateBlog()
             {
+                
+                axios.post( `http://localhost:3000/blog/update/${this.id}`, {
+                    title: this.tempTitle,
+                    maincontent: this.tempmainContent,
+                    content1: this.tempContent1,
+                    content2: this.tempContent2,
+                }).then((response) => {
+                    if(response.data.result === 'success')
+                    {
+                        console.log(response);
+                        this.$router.push('/myBlogs');
+                    }
+                })
+                /*
                 if(this.tempTitle !== this.title || this.tempmainContent !== this.maincontent || this.tempContent1 !== this.content1 || this.tempContent2 !== this.content2 )
                 {
                     firebase.database().ref('blogs/'+this.id).update({
@@ -129,12 +170,24 @@
                 } else {
                     this.updateInvalid = true;
                 }
+                */
             },
             deleteBlog()
             {
+
+                axios.delete(  `http://localhost:3000/delete/${this.id}`).then((response) => {
+                    if(response.data.result === 'success' )
+                    {
+                        this.$router.push('/home');
+                    }
+                })
+
+
+                /*
                 firebase.database().ref('blogs/'+this.id).remove();
                 firebase.database().ref('comments/'+this.id).remove();
                 this.$router.push('/myBlogs');
+                */
 
             }
         }
@@ -220,6 +273,17 @@
     width: 80%;
     margin-left: 10%;
     height: 70%;
+}
+
+.titleContainer
+{
+    font-size: 30px;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 600;
+}
+.mainContentContainer
+{
+    font-size: 15px;
 }
 .floatclass{
     padding: 4rem 0;

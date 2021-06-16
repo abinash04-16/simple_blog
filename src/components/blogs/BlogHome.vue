@@ -8,11 +8,11 @@
         <single-blog v-for="blog in blogs"
         :key='blog.id'
         :id='blog.id'
-        :from='blog.from'
+        :from='blog.user_mail'
         :createdAt="blog.createdAt"
         :title='blog.title'
-        :imgUrl='blog.imgUrl'
-        :content="blog.content"></single-blog>
+        :image=blog.image
+        :content="blog.maincontent"></single-blog>
     </section>
 </template>
 
@@ -24,7 +24,7 @@
         created()
         {
             this.$store.commit('getAllBlogs');
-            this.$store.commit('getMyBlogs');
+            console.log(this.$store.state.blogs);
 
         },
         components:{
@@ -81,7 +81,8 @@ section {
   font-family: sans-serif;
   margin: 0 auto;
   height: 40vh;
-  margin-top: 10%;
+  margin-top: 5%;
+  margin-bottom: 3%;
   width:90%;
   position: relative;
 }

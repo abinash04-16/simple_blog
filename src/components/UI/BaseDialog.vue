@@ -32,7 +32,7 @@ dialog {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
   padding: 1rem;
   overflow: hidden;
-  background-color: #F5CA99;
+  background-color: #d8b8e2;
   border: 2px solid black;
 }
 

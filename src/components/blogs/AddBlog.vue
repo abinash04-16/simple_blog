@@ -23,10 +23,8 @@
             <input type="file" name="title" placeHolder="select Image" accept="image/*" @change="fileSelected">
         </div>
         <div class='divItem'>
-            <button @click="addBlog">add</button>
-            
+            <button>add</button>
         </div>
-        
     </form>
     <div v-if="loading" :class="loading ? 'loading' : null">
                 <p>Loading......</p>
@@ -36,8 +34,9 @@
 </template>
 
 <script>
-    import firebase from 'firebase';
+    //import firebase from 'firebase';
     import NavList from '../nav/NavList.vue';
+    import axios from 'axios';
     export default
     {
         components:{NavList,},
@@ -58,11 +57,42 @@
         },
         methods:
         {
+
+            fileSelected(event)
+            {
+                this.img = event.target.files[0];
+                console.log(this.img);
+            },
             addBlog()
             {
-                if( this.img != null && this.img != null && this.title !== '' && this.maincontent !== '' && this.content1 !== '')
+                
+                if( this.title !== '' && this.maincontent !== '' && this.content1 !== '')
                 {
-                            this.loading = true;
+                    
+                    this.loading = true;
+
+                    var formData = new FormData();
+                    formData.append('title', this.title);
+                    formData.append('user_id', this.$store.state.user_id);
+                    formData.append('user_mail', this.$store.state.user_mail);
+                    formData.append('maincontent', this.maincontent);
+                    formData.append('content1', this.content1);
+                    formData.append('content2', this.content2);
+                    formData.append('file', this.img);
+                    axios.post( 'http://localhost:3000/blog/add', formData, {
+                        headers : { 'Content-Type': 'multipart/form-data' }
+                    })
+                    .then(
+                        (response) => {
+                            console.log(response);
+                            if(response.data.result === 'success' )
+                            {
+                                setTimeout( () => { this.$router.push('/home'); },1000);
+                            }
+                        }
+                    );
+
+                    /*
                     firebase.storage().ref(''+this.temp+".jpg").put(this.img).then((snapshot) => {
                         snapshot.ref.getDownloadURL().then(url => { 
                             this.img_url = url;
@@ -86,15 +116,11 @@
                         }, 2000);
                         
                     });
+                    */
                 }else{
                     this.isValid= false;
                 }
             },
-            fileSelected(event)
-            {
-                this.img = event.target.files[0];
-                console.log(this.img);
-            }
         }
     }
 </script>

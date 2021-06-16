@@ -27,7 +27,7 @@
                 </div>
                 <p v-if='temp_err_password'>Password is Invalid or Incorrect</p>
                 <div class="btn">
-                    <button>Submit</button>
+                    <button :disabled='submitClicked'>Submit</button>
                 </div>
                 <div class='altLink'>
                     <p>Create new Account, <router-link to="register">Register</router-link></p>
@@ -39,6 +39,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 import BaseDialog from '../UI/BaseDialog.vue';
     //import firebase from 'firebase';
     export default{
@@ -47,9 +48,13 @@ import BaseDialog from '../UI/BaseDialog.vue';
             if(localStorage.getItem('mail') && localStorage.getItem('password') )
             {
                 this.alreadyLogin = true;
-                this.$store.dispatch('login', { 
-                    mail: localStorage.getItem('mail'),
-                    password: localStorage.getItem('password')});
+                axios.post('http://localhost:3000/login', { email: localStorage.getItem('mail'), password: localStorage.getItem('password')}).then(
+                    (response) => {
+                        console.log(response.data.mail);
+                        this.$store.commit('setMail_andId', { mail: response.data.mail, id: response.data.id })
+                        this.$router.push('/home');
+                    }
+                );
             }
         },
         data(){
@@ -63,12 +68,27 @@ import BaseDialog from '../UI/BaseDialog.vue';
                 err_code: '',
                 err_msg: '',
                 err_status: false,
+                submitClicked: false,
             };
         },
         methods:{
             submit(){
                 if(!this.temp_err_email && !this.temp_err_password)
                 {
+                    this.submitClicked = true;
+                    axios.post('http://localhost:3000/login', { email: this.mail, password: this.password}).then(
+                        (response) => {
+                            if(response.data.result === 'success')
+                            {
+                                localStorage.setItem('mail', this.mail);
+                                localStorage.setItem('password', this.password);
+                                console.log(response.data.mail);
+                                this.$store.commit('setMail_andId', { mail: response.data.mail, id: response.data.id })
+                                this.$router.push('/home');
+                            }
+                        }
+                    );
+                    /*
                     this.$store.dispatch('login',{
                         mail: this.mail,
                         password: this.password,
@@ -81,6 +101,7 @@ import BaseDialog from '../UI/BaseDialog.vue';
                         this.err_msg = this.$store.state.err_msg;
 
                     }
+                    */
                     
                 }
             },
@@ -118,6 +139,7 @@ import BaseDialog from '../UI/BaseDialog.vue';
 </script>
 
 <style scoped>
+
 .whiteBack
 {
     background-color: rgba(red, green, blue, 0.34);
